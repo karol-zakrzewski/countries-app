@@ -5,7 +5,9 @@ export const Layout = ({ children }: PropsWithChildren) => {
   return (
     <div>
       <Navigation />
-      {children}
+      <main className="bg-slate-100 w-full flex flex-col items-center">
+        {children}
+      </main>
     </div>
   );
 };

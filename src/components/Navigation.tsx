@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const Navigation = () => {
   return (
-    <nav className="bg-white shadow-lg px-8 py-4 flex justify-between items-center">
+    <nav className="sticky top-0 inset-x-0 bg-white shadow-md px-8 py-4 flex justify-between items-center">
       <Link href="/" className="text-lg font-bold">
         Where in the world?
       </Link>
