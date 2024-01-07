@@ -2,7 +2,7 @@ import { useGetCountries } from "@/hooks/useGetCountries";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+export default function Countries() {
   const { data, error, isLoading } = useGetCountries();
 
   if (error) {
@@ -12,14 +12,15 @@ export default function Home() {
     <div>Loading...</div>;
   }
   return (
-    <Link
-      href="/"
-      className="max-w-screen-xl flex flex-wrap gap-6 px-10 py-6 w-full justify-center"
-    >
+    <div className="max-w-screen-xl flex flex-wrap gap-6 px-10 py-6 w-full justify-center">
       {data &&
         data?.map(({ name, cca3, flags, capital, population, region }) => {
           return (
-            <div key={cca3} className="bg-white border rounded-lg shadow-lg">
+            <Link
+              href={`/${cca3}`}
+              key={cca3}
+              className="bg-white border rounded-lg shadow-lg"
+            >
               <Image
                 width={200}
                 height={200}
@@ -42,9 +43,9 @@ export default function Home() {
                   {capital}
                 </p>
               </div>
-            </div>
+            </Link>
           );
         })}
-    </Link>
+    </div>
   );
 }
