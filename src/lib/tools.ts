@@ -21,11 +21,18 @@ export const getRegions = (countries: Country[]) => {
 type FilterProps = {
   countries: Country[];
   region?: string;
-  query?: string;
+  countryName?: string;
 };
 
-export const getCountries = ({ countries, query, region }: FilterProps) => {
-  const countriesFilteredByQuery = filterByCountryName({ countries, query });
+export const filterCountriesByNameAndRegion = ({
+  countries,
+  countryName,
+  region,
+}: FilterProps) => {
+  const countriesFilteredByQuery = filterByCountryName({
+    countries,
+    countryName: countryName,
+  });
   const countriesFilteredByRegion = filterByRegion({
     countries: countriesFilteredByQuery,
     region,
@@ -41,15 +48,15 @@ const filterByRegion = ({ countries, region }: Omit<FilterProps, "query">) => {
 };
 const filterByCountryName = ({
   countries,
-  query,
+  countryName,
 }: Omit<FilterProps, "region">) => {
-  if (!query) {
+  if (!countryName) {
     return countries;
   }
 
   return countries.filter(
     (country) =>
-      country.name.common.toLowerCase().includes(query.toLowerCase()) ||
-      country.name.official.toLowerCase().includes(query.toLowerCase())
+      country.name.common.toLowerCase().includes(countryName.toLowerCase()) ||
+      country.name.official.toLowerCase().includes(countryName.toLowerCase())
   );
 };
