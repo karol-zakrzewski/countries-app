@@ -1,20 +1,86 @@
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { useGetCountries } from "@/hooks/useGetCountries";
+import { getCountries, getRegions } from "@/lib/tools";
+import { GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+export const getStaticProps = (async (context) => {
+  return { props: {} };
+}) satisfies GetStaticProps<{}>;
 
 export default function Countries() {
   const { data, error, isLoading } = useGetCountries();
+  const { pathname, query, push } = useRouter();
+  const region = Array.isArray(query.region) ? query.region[0] : query.region;
+  const country = Array.isArray(query.country)
+    ? query.country[0]
+    : query.country;
 
   if (error) {
     return <div>Error</div>;
   }
-  if (isLoading) {
-    <div>Loading...</div>;
+  if (isLoading || !data) {
+    return <div>Loading...</div>;
   }
+
+  const countries = getCountries({ countries: data, query: country, region });
+
   return (
-    <div className="max-w-screen-xl flex flex-wrap gap-6 px-10 py-6 w-full justify-center">
-      {data &&
-        data?.map(({ name, cca3, flags, capital, population, region }) => {
+    <div className="max-w-screen-xl px-10 py-6 w-full flex flex-col gap-6">
+      <div className="flex justify-between items-center">
+        <Input
+          onChange={(event) => {
+            const value = event.target.value;
+
+            if (value === "") {
+              delete query.country;
+              push({
+                pathname,
+                query,
+              });
+              return;
+            }
+
+            push({
+              pathname,
+              query: {
+                ...query,
+                country: value,
+              },
+            });
+          }}
+          placeholder="Search for a country..."
+        />
+        <Select
+          value={region}
+          onChange={(event) => {
+            const value = event.target.value;
+
+            if (value === "") {
+              delete query.region;
+              push({
+                pathname,
+                query,
+              });
+              return;
+            }
+
+            push({
+              pathname,
+              query: {
+                ...query,
+                region: value,
+              },
+            });
+          }}
+          options={getRegions(data)}
+        />
+      </div>
+      <div className=" flex flex-wrap gap-6 justify-between">
+        {countries.map(({ name, cca3, flags, capital, population, region }) => {
           return (
             <Link
               href={`/${cca3}`}
@@ -22,11 +88,11 @@ export default function Countries() {
               className="bg-white border rounded-lg shadow-lg"
             >
               <Image
-                width={200}
+                width={256}
                 height={200}
                 src={flags.png}
                 alt={`flag of ${name}`}
-                className="w-full aspect-video rounded-t-lg"
+                className="aspect-video rounded-t-lg"
               />
               <div className="p-4">
                 <p className="font-bold mb-2">{name.common}</p>
@@ -46,6 +112,7 @@ export default function Countries() {
             </Link>
           );
         })}
+      </div>
     </div>
   );
 }

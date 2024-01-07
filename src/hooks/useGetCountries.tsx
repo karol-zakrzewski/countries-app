@@ -1,18 +1,5 @@
+import { Country } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-
-type Country = {
-  name: {
-    common: string;
-  };
-  population: number;
-  region: string;
-  capital: string[];
-  flags: {
-    png: string;
-    svg: string;
-  };
-  cca3: string;
-};
 
 const getCountries = async () => {
   const response = await fetch("https://restcountries.com/v3.1/all");
