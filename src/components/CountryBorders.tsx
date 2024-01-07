@@ -18,7 +18,7 @@ export const CountryBorders = ({ borders }: Props) => {
   return (
     <div className="flex items-center gap-4">
       <span className="font-semibold text-sm py-6">Border Countries:</span>
-      <div className="flex gap-1">
+      <div className="flex flex-wrap gap-1">
         {isLoading ? (
           <div>Loading...</div>
         ) : (

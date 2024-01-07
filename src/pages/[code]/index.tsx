@@ -40,74 +40,76 @@ export const getStaticProps = (async (context) => {
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 export default function CountryDetails({ country }: Props) {
-  const { back, push } = useRouter();
+  const { back } = useRouter();
   return (
-    <div className="p-10 w-full flex flex-col gap-14">
+    <div className="px-6 p-10 lg:px-10 w-full flex flex-col gap-14 dark:text-white">
       <Button onClick={back}>
         <div className="flex items-center gap-2 px-4">
           <IoIosArrowRoundBack className="text-2xl" />
           <span>Back</span>
         </div>
       </Button>
-      <div className="flex gap-10">
-        <div>
-          <Image
-            width={600}
-            height={600}
-            src={country.flags.png}
-            alt={`flag of ${country.name.common}`}
-            className="aspect-video"
-          />
-        </div>
-        <div className="flex flex-col justify-evenly">
-          <p className="font-bold text-2xl">{country.name.common}</p>
-
-          <div className="flex justify-between">
-            <div>
-              <p>
-                <span className="font-semibold text-sm">Native Name: </span>
-                {Object.values(country.name.nativeName).reverse()[0].common}
-              </p>
-              <p>
-                <span className="font-semibold text-sm">Population: </span>
-                {country.population}
-              </p>
-              <p>
-                <span className="font-semibold text-sm">Region: </span>
-                {country.region}
-              </p>
-              <p>
-                <span className="font-semibold text-sm">Subregion: </span>
-                {country.subregion}
-              </p>
-              <p>
-                <span className="font-semibold text-sm">Capital: </span>
-                {country.capital.map((c) => c).join(", ")}
-              </p>
-            </div>
-            <div>
-              <p>
-                <span className="font-semibold text-sm">
-                  Top Level Domain:{" "}
-                </span>
-                {country.tld.map((domain) => domain).join(", ")}
-              </p>
-              <p>
-                <span className="font-semibold text-sm">Currencies: </span>
-                {Object.values(country.currencies)
-                  .map((currency) => currency.name)
-                  .join(", ")}
-              </p>
-              <p>
-                <span className="font-semibold text-sm">Languages: </span>
-                {Object.values(country.languages)
-                  .map((language) => language)
-                  .join(", ")}
-              </p>
-            </div>
+      <div className="flex justify-center">
+        <div className="flex flex-col lg:flex-row gap-10">
+          <div>
+            <Image
+              width={500}
+              height={500}
+              src={country.flags.png}
+              alt={`flag of ${country.name.common}`}
+              className="aspect-video"
+            />
           </div>
+          <div className="flex flex-col justify-evenly">
+            <p className="font-bold text-2xl">{country.name.common}</p>
 
-          <CountryBorders borders={country.borders} />
+            <div className="flex flex-col lg:flex-row gap-6 justify-between">
+              <div>
+                <p>
+                  <span className="font-semibold text-sm">Native Name: </span>
+                  {Object.values(country.name.nativeName).reverse()[0].common}
+                </p>
+                <p>
+                  <span className="font-semibold text-sm">Population: </span>
+                  {country.population}
+                </p>
+                <p>
+                  <span className="font-semibold text-sm">Region: </span>
+                  {country.region}
+                </p>
+                <p>
+                  <span className="font-semibold text-sm">Subregion: </span>
+                  {country.subregion}
+                </p>
+                <p>
+                  <span className="font-semibold text-sm">Capital: </span>
+                  {country.capital.map((c) => c).join(", ")}
+                </p>
+              </div>
+              <div>
+                <p>
+                  <span className="font-semibold text-sm">
+                    Top Level Domain:{" "}
+                  </span>
+                  {country.tld.map((domain) => domain).join(", ")}
+                </p>
+                <p>
+                  <span className="font-semibold text-sm">Currencies: </span>
+                  {Object.values(country.currencies)
+                    .map((currency) => currency.name)
+                    .join(", ")}
+                </p>
+                <p>
+                  <span className="font-semibold text-sm">Languages: </span>
+                  {Object.values(country.languages)
+                    .map((language) => language)
+                    .join(", ")}
+                </p>
+              </div>
+            </div>
+
+            <CountryBorders borders={country.borders} />
+          </div>
         </div>
       </div>
     </div>
