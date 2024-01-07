@@ -1,4 +1,4 @@
-import { getCountry } from "@/lib";
+import { getCountriesByCodes } from "@/lib";
 import { Country } from "@/lib/types";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import React from "react";
@@ -6,6 +6,8 @@ import { z } from "zod";
 import Image from "next/image";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
+import { Button } from "@/components/ui/Button";
+import { CountryBorders } from "@/components/CountryBorders";
 
 export const getStaticPaths = (async () => {
   return {
@@ -25,29 +27,28 @@ export const getStaticProps = (async (context) => {
     return { notFound: true };
   }
 
-  const res = await getCountry(result.data.code);
+  const res = await getCountriesByCodes(result.data.code);
 
   if (!res.success) {
     return { notFound: true };
   }
 
-  return { props: { country: res.data } };
+  return { props: { country: res.data[0] } };
 }) satisfies GetStaticProps<{
   country: Country;
 }>;
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 export default function CountryDetails({ country }: Props) {
-  const { back } = useRouter();
+  const { back, push } = useRouter();
   return (
     <div className="p-10 w-full flex flex-col gap-14">
-      <button
-        onClick={back}
-        className="flex items-center gap-2 bg-white py-2 px-10 border rounded-lg shadow-xl w-fit"
-      >
-        <IoIosArrowRoundBack className="text-2xl" />
-        <span>Back</span>
-      </button>
+      <Button onClick={back}>
+        <div className="flex items-center gap-2 px-4">
+          <IoIosArrowRoundBack className="text-2xl" />
+          <span>Back</span>
+        </div>
+      </Button>
       <div className="flex gap-10">
         <div>
           <Image
@@ -58,8 +59,8 @@ export default function CountryDetails({ country }: Props) {
             className="aspect-video"
           />
         </div>
-        <div>
-          <p className="font-bold text-2xl my-4">{country.name.common}</p>
+        <div className="flex flex-col justify-evenly">
+          <p className="font-bold text-2xl">{country.name.common}</p>
 
           <div className="flex justify-between">
             <div>
@@ -105,12 +106,8 @@ export default function CountryDetails({ country }: Props) {
               </p>
             </div>
           </div>
-          <p>
-            <span className="font-semibold text-sm py-6">
-              Border Countries:{" "}
-            </span>
-            {country.borders.map((border) => border).join(", ")}
-          </p>
+
+          <CountryBorders borders={country.borders} />
         </div>
       </div>
     </div>

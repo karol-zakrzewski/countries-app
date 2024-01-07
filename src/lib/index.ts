@@ -21,10 +21,14 @@ export const getCountries = async (): Promise<
   };
 };
 
-export const getCountry = async (
-  code: string
-): Promise<Response.Error | Response.Success<Country>> => {
-  const response = await fetch(`https://restcountries.com/v3.1/alpha/${code}`);
+export const getCountriesByCodes = async (
+  codes: string | string[]
+): Promise<Response.Error | Response.Success<Country[]>> => {
+  const isCodesArray = Array.isArray(codes);
+  const codesQuery = isCodesArray ? codes.join(",") : codes;
+  const response = await fetch(
+    `https://restcountries.com/v3.1/alpha?codes=${codesQuery}`
+  );
 
   if (!response.ok) {
     return {
@@ -35,10 +39,9 @@ export const getCountry = async (
   }
 
   const data: Country[] = await response.json();
-
   return {
     success: true,
     error: null,
-    data: data[0],
+    data,
   };
 };
