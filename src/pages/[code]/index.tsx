@@ -8,6 +8,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/Button";
 import { CountryBorders } from "@/components/CountryBorders";
+import { CountryDetailsItem } from "@/components/CountryDetailsItem";
 
 export const getStaticPaths = (async () => {
   return {
@@ -41,6 +42,47 @@ export const getStaticProps = (async (context) => {
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 export default function CountryDetails({ country }: Props) {
   const { back } = useRouter();
+
+  const countryDetails = [
+    {
+      label: "Native Name: ",
+      value: Object.values(country.name.nativeName).reverse()[0].common,
+    },
+    {
+      label: "Population: ",
+      value: country.population,
+    },
+    {
+      label: "Region: ",
+      value: country.region,
+    },
+    {
+      label: "Subregion: ",
+      value: country.subregion,
+    },
+    {
+      label: "Capital: ",
+      value: country.capital.map((c) => c).join(", "),
+    },
+
+    {
+      label: "Top Level Domain: ",
+      value: country.tld.map((domain) => domain).join(", "),
+    },
+    {
+      label: "Currencies: ",
+      value: Object.values(country.currencies)
+        .map((currency) => currency.name)
+        .join(", "),
+    },
+    {
+      label: "Languages: ",
+      value: Object.values(country.languages)
+        .map((language) => language)
+        .join(", "),
+    },
+  ];
+
   return (
     <div className="px-6 p-10 lg:px-10 w-full flex flex-col gap-14 dark:text-white">
       <Button onClick={back}>
@@ -49,6 +91,7 @@ export default function CountryDetails({ country }: Props) {
           <span>Back</span>
         </div>
       </Button>
+
       <div className="flex justify-center">
         <div className="flex flex-col lg:flex-row gap-10">
           <div>
@@ -60,52 +103,16 @@ export default function CountryDetails({ country }: Props) {
               className="aspect-video"
             />
           </div>
+
           <div className="flex flex-col justify-evenly">
             <p className="font-bold text-2xl">{country.name.common}</p>
 
-            <div className="flex flex-col lg:flex-row gap-6 justify-between">
-              <div>
-                <p>
-                  <span className="font-semibold text-sm">Native Name: </span>
-                  {Object.values(country.name.nativeName).reverse()[0].common}
-                </p>
-                <p>
-                  <span className="font-semibold text-sm">Population: </span>
-                  {country.population}
-                </p>
-                <p>
-                  <span className="font-semibold text-sm">Region: </span>
-                  {country.region}
-                </p>
-                <p>
-                  <span className="font-semibold text-sm">Subregion: </span>
-                  {country.subregion}
-                </p>
-                <p>
-                  <span className="font-semibold text-sm">Capital: </span>
-                  {country.capital.map((c) => c).join(", ")}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <span className="font-semibold text-sm">
-                    Top Level Domain:{" "}
-                  </span>
-                  {country.tld.map((domain) => domain).join(", ")}
-                </p>
-                <p>
-                  <span className="font-semibold text-sm">Currencies: </span>
-                  {Object.values(country.currencies)
-                    .map((currency) => currency.name)
-                    .join(", ")}
-                </p>
-                <p>
-                  <span className="font-semibold text-sm">Languages: </span>
-                  {Object.values(country.languages)
-                    .map((language) => language)
-                    .join(", ")}
-                </p>
-              </div>
+            <div className="grid grid-rows-5 grid-flow-col">
+              {countryDetails.map(({ label, value }) => {
+                return (
+                  <CountryDetailsItem key={label} label={label} value={value} />
+                );
+              })}
             </div>
 
             <CountryBorders borders={country.borders} />

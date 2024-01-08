@@ -1,9 +1,8 @@
+import { getCountriesByCountryName } from ".";
 import { Country } from "./types";
 import { Option } from "@/lib/types";
 
 export const getRegions = (countries: Country[]) => {
-  // TODO: save to json
-  // TODO: get regions instead options
   const options = countries.reduce<Option<string>[]>((acc, country) => {
     const region = country.region;
 
@@ -24,29 +23,33 @@ type FilterProps = {
   countryName?: string;
 };
 
-export const filterCountriesByNameAndRegion = ({
+export const filterCountriesByNameAndRegion = async ({
   countries,
   countryName,
   region,
 }: FilterProps) => {
-  const countriesFilteredByQuery = filterByCountryName({
+  const countriesFilteredByCountryQuery = await filterByCountryName({
     countries,
     countryName: countryName,
   });
+
   const countriesFilteredByRegion = filterByRegion({
-    countries: countriesFilteredByQuery,
+    countries: countriesFilteredByCountryQuery,
     region,
   });
+
   return countriesFilteredByRegion;
 };
 
-const filterByRegion = ({ countries, region }: Omit<FilterProps, "query">) => {
+const filterByRegion = ({ region, countries }: Omit<FilterProps, "query">) => {
   if (!region) {
     return countries;
   }
-  return countries.filter((country) => country.region.includes(region));
+
+  return countries.filter((country) => country.region === region);
 };
-const filterByCountryName = ({
+
+const filterByCountryName = async ({
   countries,
   countryName,
 }: Omit<FilterProps, "region">) => {
@@ -54,9 +57,11 @@ const filterByCountryName = ({
     return countries;
   }
 
-  return countries.filter(
-    (country) =>
-      country.name.common.toLowerCase().includes(countryName.toLowerCase()) ||
-      country.name.official.toLowerCase().includes(countryName.toLowerCase())
-  );
+  const res = await getCountriesByCountryName(countryName);
+
+  if (!res.success) {
+    return countries;
+  }
+
+  return res.data;
 };

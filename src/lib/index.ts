@@ -45,3 +45,26 @@ export const getCountriesByCodes = async (
     data,
   };
 };
+
+export const getCountriesByCountryName = async (
+  countryName: string
+): Promise<Response.Error | Response.Success<Country[]>> => {
+  const response = await fetch(
+    `https://restcountries.com/v3.1/name/${countryName}`
+  );
+
+  if (!response.ok) {
+    return {
+      success: false,
+      error: "failed to fetch country data",
+      data: null,
+    };
+  }
+
+  const data: Country[] = await response.json();
+  return {
+    success: true,
+    error: null,
+    data,
+  };
+};
